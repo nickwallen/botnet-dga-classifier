@@ -5,13 +5,11 @@
 
 # stack the data from all sources
 domains <- rbindlist (list (alexa, dds, opendns_random, opendns_top, quantcast))
+rm (alexa, dds, opendns_random, opendns_top, quantcast)
 
 # fix-up the data types
 domains [, host := as.character (host)]
 domains [, type := as.factor (type)]
-
-# remove any duplicate domains
-domains <- domains [, list (host = unique (host)), by = type ]
 
 # extract the tld and domain
 domains [, domain := extract_domain (host) ]
