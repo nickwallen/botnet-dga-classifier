@@ -1,4 +1,4 @@
-Domain Generation Algorithm (DGA) Classifier
+Botnet Domain Generation Algorithm Classifier
 ===================================================================
 
 ### Getting Started
