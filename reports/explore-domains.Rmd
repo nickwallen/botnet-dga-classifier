@@ -1,0 +1,24 @@
+---
+title: "Domains - Exploratory Analysis"
+author: "Nick Allen"
+date: "October 8, 2014"
+output: html_document
+---
+
+```{r}
+setwd ("..")
+load.project ()
+```
+
+### Data 
+
+```{r}
+
+```
+
+There is an overwhelming number of 'legit' domains versus malicious.  This severe class imbalance will need to be dealt with as it will negatively impact the model.
+
+```{r}
+ggplot (domains, aes (x=factor(1), fill=type)) + geom_bar (width=1) + coord_polar (theta="y")
+```
+

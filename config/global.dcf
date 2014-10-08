@@ -1,0 +1,11 @@
+version: 0.6
+data_loading: TRUE
+cache_loading: TRUE
+recursive_loading: FALSE
+munging: TRUE
+logging: FALSE
+load_libraries: TRUE
+libraries: ggplot2, stringr, lubridate
+as_factors: TRUE
+data_tables: TRUE
+attach_internal_libraries: FALSE
