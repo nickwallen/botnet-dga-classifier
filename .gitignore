@@ -2,3 +2,4 @@
 .Rhistory
 .RData
 dga-classifier.Rproj
+*.html
