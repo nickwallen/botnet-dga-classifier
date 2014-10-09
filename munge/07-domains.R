@@ -18,7 +18,3 @@ domains [, tld    := extract_tld (host) ]
 # exclude any domains that could not be parsed correctly
 domains <- domains [ complete.cases (domains) ]
 
-# TODO exclude any domains that don't have a valid TLD (according to IANA)
-
-
-
