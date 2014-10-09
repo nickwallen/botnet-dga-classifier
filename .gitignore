@@ -3,3 +3,4 @@
 .RData
 dga-classifier.Rproj
 *.html
+*.md
