@@ -42,7 +42,16 @@ This project contains a rudimentary classifier that can determine if a domain is
 
 ### Approach
 
+### Additional Software
 
+#### Aspell
+
+http://www.omegahat.org/Aspell/aspell.html
+
+```
+brew install aspell
+install.packages("Aspell", repos = "http://www.omegahat.org/R")
+```
 
 
 

@@ -7,18 +7,34 @@ output: html_document
 
 ```{r}
 setwd ("..")
+library (ProjectTemplate)
 load.project ()
 ```
 
 ### Data 
 
-```{r}
-
-```
-
-There is an overwhelming number of 'legit' domains versus malicious.  This severe class imbalance will need to be dealt with as it will negatively impact the model.
+There is an overwhelming number of 'legit' domains versus malicious.  This severe class imbalance will need to be dealt with as it will negatively impact model training.
 
 ```{r}
 ggplot (domains, aes (x=factor(1), fill=type)) + geom_bar (width=1) + coord_polar (theta="y")
 ```
+
+#### Domain Length
+
+The number of characters of the domain itself seems to be a significant differentiator between legitimate and malicious domains.  Malicous domains tend to have much longer domain names.
+
+```{r}
+ggplot (domains, aes (length, fill = type)) + geom_density () + facet_wrap (~ type, ncol = 1)
+```
+
+The average malicious domain is about twice as long as the benign one.
+
+```{r}
+domains [, list (mean  = mean (length)), by = type]
+```
+
+
+
+
+
 
