@@ -5,6 +5,9 @@
 #
 count_dictionary_substrings <- function (input, min_length = 1, ...) {
     
+    # a single domain is expected as input (not vectorized)
+    stopifnot (length (input) == 1)
+    
     # extract all of the substrings for the given input
     words <- unlist (
         foreach (start = 1:nchar(input)) %dopar% {
