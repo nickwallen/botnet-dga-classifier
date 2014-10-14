@@ -1,10 +1,9 @@
 #
 # counts the number of substrings that are valid dictionary words for
-# a given string.
+# a given string.  any additional arguments are passed on to the spell
+# checker; aspell.
 #
 count_dictionary_substrings <- function (input, min_length = 1, ...) {
-
-    if (require (doMC)) library (doMC)
     
     # extract all of the substrings for the given input
     words <- unlist (
