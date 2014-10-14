@@ -5,7 +5,7 @@ recursive_loading: FALSE
 munging: TRUE
 logging: FALSE
 load_libraries: TRUE
-libraries: ggplot2, stringr, lubridate
+libraries: ggplot2, stringr, lubridate, Aspell, foreach
 as_factors: TRUE
 data_tables: TRUE
 attach_internal_libraries: FALSE
