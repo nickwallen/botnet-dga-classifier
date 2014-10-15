@@ -1,9 +1,9 @@
 #
-# finds the percentage of all substrings that are valid dictionary words for
-# a given string.  any additional arguments are passed on to the spell
+# finds the fraction of all substrings that are valid dictionary words for
+# a given string.  any additional arguments are passed through to the spell
 # checker; aspell.
 #
-count_dictionary_substrings <- function (input, min_length = 2, ...) {
+dictionary_words <- function (input, min_length = 2, ...) {
     
     # a single word is expected as input (not mulitple)
     stopifnot (length (input) == 1)

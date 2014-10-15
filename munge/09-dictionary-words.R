@@ -1,11 +1,11 @@
 #
-# count the number of valid dictionary words that exist as substrings
-# in each of the domains
+# for each domain, tallies the fraction of all substrings that are valid 
+# dictionary words.  malicious domains tend to have fewer dictionary words.
 #
 
 # maintaining a single speller ensures that it is not created/destroyed for each domain
 s <- getSpeller ()
 
 domains [, 
-         dictionary := count_dictionary_substrings (domain, speller = s), 
+         dictionary := dictionary_words (domain, speller = s), 
          by = domain]
