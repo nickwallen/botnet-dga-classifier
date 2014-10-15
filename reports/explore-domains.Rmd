@@ -43,7 +43,7 @@ domains [, list (mean = mean (length), median = median (length)), by = type]
 
 #### Dictionary Words
 
-Malicious domains tend to have far fewer valid dictionary words embedded within the domain.  The number of dictionary
+Malicious domains tend to have far fewer valid dictionary words embedded within the domain.  The number of dictionary words as a fraction of the total number of substrings is used to control for longer domain names.
 
 ```{r}
 ggplot (domains, aes (dictionary, fill=type)) + 

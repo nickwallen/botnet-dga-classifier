@@ -19,7 +19,7 @@ load.project ()
 
 A rough pass at classifying domains as either legit or malicious based on the current feature set.  A portion of the data is held-out at random for cross-validation.
 
-```{r}
+```{r, message=FALSE}
 model <- train_classifier (type ~ length + dictionary, domains, p = 0.80)
 ```
 
@@ -42,34 +42,34 @@ When such a model is applied in the real-world, the more challenging scenario is
 Step 1: Create a training data set using Goz and Cryptolocker.
 
 ```{r}
-train <- domains [ sources %in% c ("goz",
-                                   "cryptolocker",
-                                   "opendns-random-10k",
-                                   "opendns-top-10k")]
+trainer <- domains [ source %in% c ("goz",
+                                    "cryptolocker",
+                                    "opendns-random-10k",
+                                    "opendns-top-10k")]
 ```
 
 Step 2: Train a model using **all** of the training data available from Goz and Cryptolocker.
 
-```{r}
-model <- train_classifier (type ~ length + dictionary, train, p = 1.0)
+```{r, message=FALSE}
+model <- train_classifier (type ~ length + dictionary, trainer, p = 1.0, n = 10)
 ```
 
 Step 3: Create a hold-out test data set as if Newgoz has never been encountered and is new in the wild.  Also, use a completely different set of 'legit' domains from Alexis.
 
 ```{r}
-test <- domains [ sources %in% c ("newgoz", "alexa")]
+tester <- domains [ source %in% c ("newgoz", "alexa")]
 ```
 
 Step 4: Use the classification model to classify the held-out test data.
 
 ```{r}
-test$type.hat <- predict (model, newdata = test)
+tester$type.hat <- predict (model, newdata = tester)
 ```
 
 Step 5: How accurate is the domain classification?
 
 ```{r}
-with (test, type, type.hat)
+with (tester, confusionMatrix (type, type.hat))
 ```
 
 
