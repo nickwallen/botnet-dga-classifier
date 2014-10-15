@@ -1,7 +1,7 @@
 #
 # trains a classification model that can distinguish legit vs malicious domains
 #
-train_classifier <- function (formula, data, p = 0.80) {
+train_classifier <- function (formula, data, p = 0.80, n = 5) {
     
     # sanity checks
     stopifnot (is (formula, "formula"))
@@ -11,5 +11,5 @@ train_classifier <- function (formula, data, p = 0.80) {
     model <- train (form      = formula, 
                     data      = data.frame (data), 
                     method    = "gbm", 
-                    trControl = trainControl (method = "boot", p = p))
+                    trControl = trainControl (method = "boot", p = p, number = n))
 }
