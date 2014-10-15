@@ -17,7 +17,6 @@ expect_equal (extract_domain (input), rep ("amazon", 3))
 expect_equal (extract_domain (".com"),                       NA_character_)
 expect_equal (extract_domain ("http://.com"),                NA_character_)
 expect_equal (extract_domain ("http://.com/path"),           NA_character_)
-expect_equal (extract_domain ("domain with spaces.com"),     NA_character_)
 
 # validate with vectorized input
 input <- c(".com", "http://.com", "http://.com/path")
