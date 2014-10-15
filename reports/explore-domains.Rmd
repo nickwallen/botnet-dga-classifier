@@ -2,42 +2,56 @@
 title: "Domains - Exploratory Analysis"
 author: "Nick Allen"
 date: "October 8, 2014"
-output: html_document
+output:
+  html_document:
+    fig_height: 6
+    fig_width: 8.5
+    toc: yes
 ---
 
-```{r}
+```{r, echo=FALSE, message=FALSE}
 setwd ("..")
 library (ProjectTemplate)
 load.project ()
 ```
 
-### Data 
+### Data
 
 There is an overwhelming number of 'legit' domains versus malicious.  This severe class imbalance will need to be dealt with as it will negatively impact model training.
 
 ```{r}
-ggplot (domains, aes (x=factor(1), fill=type)) + geom_bar (width=1) + coord_polar (theta="y")
+domains [, .N, by = type]
 ```
+
+### Features
 
 #### Domain Length
 
 The number of characters of the domain itself seems to be a significant differentiator between legitimate and malicious domains.  Malicous domains tend to have much longer domain names.
 
 ```{r}
-ggplot (domains, aes (length, fill = type)) + geom_density () + facet_wrap (~ type, ncol = 1)
+ggplot (domains, aes (length, fill = type)) + 
+    geom_density () + 
+    facet_wrap (~ type, ncol = 1)
 ```
 
 The average malicious domain is about twice as long as the benign one.
 
 ```{r}
-domains [, list (mean  = mean (length)), by = type]
+domains [, list (mean = mean (length), median = median (length)), by = type]
 ```
 
-#### Dictionary Word Count
+#### Dictionary Words
+
+Malicious domains tend to have far fewer valid dictionary words embedded within the domain.  The number of dictionary
 
 ```{r}
-ggplot (domains, aes (dictionary, fill=type, alpha=0.5)) + geom_density()
+ggplot (domains, aes (dictionary, fill=type)) + 
+    geom_density () +
+    facet_wrap (~ type, ncol = 1)
 ```
+
+For legit domains, roughly `r percent (domains [type == "legit", mean (dictionary)])` of all domain substrings are valid dictionary words.  For malicious domains only about `r percent (domains [type == "malicious", mean (dictionary)])` are valid dictionary words.  This is a striking difference.
 
 ```{r}
 domains [, mean (dictionary), by = type]
