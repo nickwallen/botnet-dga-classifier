@@ -2,10 +2,77 @@
 title: "Classify Domains"
 author: "Nick Allen"
 date: "October 8, 2014"
-output: html_document
+output:
+  html_document:
+    fig_height: 6
+    fig_width: 8.5
+    toc: yes
 ---
 
-```{r}
-
+```{r, echo=FALSE, message=FALSE}
+setwd ("..")
+library (ProjectTemplate)
+load.project ()
 ```
+
+### Classification
+
+A rough pass at classifying domains as either legit or malicious based on the current feature set.  A portion of the data is held-out at random for cross-validation.
+
+```{r}
+model <- train_classifier (type ~ length + dictionary, domains, p = 0.80)
+```
+
+How accurate is the classifier?
+
+```{r}
+summary (model)
+```
+
+Are there any issues with either sensitivity or specificity?
+
+```{r}
+confusionMatrix (model)
+```
+
+### Real-World Classification
+
+When such a model is applied in the real-world, the more challenging scenario is when a completely new malware implementation is encountered.  In this scenario there is no training data specific to the new maleware. The following assesses accuracy based on this more difficult scenario.
+
+Step 1: Create a training data set using Goz and Cryptolocker.
+
+```{r}
+train <- domains [ sources %in% c ("goz",
+                                   "cryptolocker",
+                                   "opendns-random-10k",
+                                   "opendns-top-10k")]
+```
+
+Step 2: Train a model using **all** of the training data available from Goz and Cryptolocker.
+
+```{r}
+model <- train_classifier (type ~ length + dictionary, train, p = 1.0)
+```
+
+Step 3: Create a hold-out test data set as if Newgoz has never been encountered and is new in the wild.  Also, use a completely different set of 'legit' domains from Alexis.
+
+```{r}
+test <- domains [ sources %in% c ("newgoz", "alexa")]
+```
+
+Step 4: Use the classification model to classify the held-out test data.
+
+```{r}
+test$type.hat <- predict (model, newdata = test)
+```
+
+Step 5: How accurate is the domain classification?
+
+```{r}
+with (test, type, type.hat)
+```
+
+
+
+
 
