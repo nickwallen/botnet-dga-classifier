@@ -33,6 +33,15 @@ The average malicious domain is about twice as long as the benign one.
 domains [, list (mean  = mean (length)), by = type]
 ```
 
+#### Dictionary Word Count
+
+```{r}
+ggplot (domains, aes (dictionary, fill=type, alpha=0.5)) + geom_density()
+```
+
+```{r}
+domains [, mean (dictionary), by = type]
+```
 
 
 
