@@ -1,20 +1,26 @@
 #
-# counts the number of substrings that are valid dictionary words for
+# finds the percentage of all substrings that are valid dictionary words for
 # a given string.  any additional arguments are passed on to the spell
 # checker; aspell.
 #
-count_dictionary_substrings <- function (input, min_length = 1, ...) {
+count_dictionary_substrings <- function (input, min_length = 2, ...) {
     
-    # a single domain is expected as input (not vectorized)
+    # a single word is expected as input (not mulitple)
     stopifnot (length (input) == 1)
     
-    # extract all of the substrings for the given input
+    # extract all of the substrings for the given word
     words <- unlist (sapply (1:nchar(input), function (start) {
         sapply (start:nchar (input), function (end) {
             substr (input, start, end)
         })
     }))
     
-    # sum the number of dictionary words that are greater than the min length
-    sum (aspell (words, ...) & nchar (words) > min_length)
+    # exclude any words that are too short
+    words <- words [nchar (words) > min_length]
+    
+    # return the fraction of all substrings that are in the dictionary
+    if (length (words) > 0)
+        sum (aspell (words, ...)) / length (words)
+    else
+        0.0
 }
