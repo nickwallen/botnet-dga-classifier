@@ -9,7 +9,7 @@ output:
     toc: yes
 ---
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 setwd ("..")
 library (ProjectTemplate)
 load.project ()
@@ -19,7 +19,7 @@ load.project ()
 
 A rough pass at classifying domains as either legit or malicious based on the current feature set.  A portion of the data is held-out at random for cross-validation.
 
-```{r, message=FALSE}
+```{r, message=FALSE, results='hide', warning=FALSE}
 model <- train_classifier (type ~ length + dictionary, domains, p = 0.80)
 ```
 
@@ -50,7 +50,7 @@ trainer <- domains [ source %in% c ("goz",
 
 Step 2: Train a model using **all** of the training data available from Goz and Cryptolocker.
 
-```{r, message=FALSE}
+```{r, message=FALSE, results='hide', warning=FALSE}
 model <- train_classifier (type ~ length + dictionary, trainer, p = 1.0, n = 10)
 ```
 
