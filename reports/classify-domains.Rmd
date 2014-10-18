@@ -69,8 +69,9 @@ tester$type.hat <- predict (model, newdata = tester)
 Step 5: How accurate is the domain classification?
 
 ```{r}
-with (tester, confusionMatrix (type, type.hat))
+with (tester, confusionMatrix (type, type.hat, positive = "malicious"))
 ```
+
 
 
 
