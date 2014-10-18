@@ -23,6 +23,10 @@ A rough pass at classifying domains as either legit or malicious based on the cu
 model <- train_classifier (type ~ length + dictionary, domains, p = 0.80)
 ```
 
+```{r}
+model
+```
+
 How accurate is the classifier?
 
 ```{r}
@@ -52,6 +56,10 @@ Step 2: Train a model using **all** of the training data available from Goz and 
 
 ```{r, message=FALSE, results='hide', warning=FALSE}
 model <- train_classifier (type ~ length + dictionary, trainer, p = 1.0, n = 10)
+```
+
+```{r}
+model
 ```
 
 Step 3: Create a hold-out test data set as if Newgoz has never been encountered and is new in the wild.  Also, use a completely different set of 'legit' domains from Alexis.
