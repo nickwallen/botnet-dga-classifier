@@ -15,12 +15,27 @@ library (ProjectTemplate)
 load.project ()
 ```
 
+### Features
+
+How well can we distinguish the classes based on the existing feature set?
+
+```{r, results='hide'}
+d <- domains [source %nin% c('alexa','quantcast')]
+```
+
+```{r}
+ggplot (d, aes (dictionary, length, colour = type)) + geom_point()
+```
+
 ### Classification
 
 A rough pass at classifying domains as either legit or malicious based on the current feature set.  A portion of the data is held-out at random for cross-validation.
 
 ```{r, message=FALSE, results='hide', warning=FALSE}
-model <- train_classifier (type ~ length + dictionary, domains, p = 0.80)
+
+# create a model with only a subset of all domains for expediancy
+index <- createDataPartition(domains$type, p = .2, list = FALSE, times = 1) [, 1]
+model <- train_classifier (type ~ length + dictionary, domains [index], p = 0.80)
 ```
 
 ```{r}
@@ -36,7 +51,7 @@ summary (model)
 Are there any issues with either sensitivity or specificity?
 
 ```{r}
-confusionMatrix (model)
+confusionMatrix (model, positive = "malicious")
 ```
 
 ### Real-World Classification
@@ -74,10 +89,58 @@ Step 4: Use the classification model to classify the held-out test data.
 tester$type.hat <- predict (model, newdata = tester)
 ```
 
-Step 5: How accurate is the domain classification?
+### Diagnostics
+
+What do the results look-like?
 
 ```{r}
 with (tester, confusionMatrix (type, type.hat, positive = "malicious"))
+```
+
+Let's explore the trade-off between sensitivity and specificity.  First, capture the class probabilities from the model
+
+```{r}
+
+# extract the model probabilities aka confidence
+confidence <- predict (model, newdata = tester, type = "prob")
+names (confidence) <- c("legit.prob", "malicious.prob")
+
+# attach them to the original data set
+tester <- cbind (tester, confidence)
+```
+
+What do the confidence levels look-like for malicious domains?
+
+```{r}
+ggplot (tester [type == "malicious"], aes (malicious.prob)) + 
+    geom_density () + 
+    scale_x_continuous (labels=percent)
+```
+
+What do the confidence levels look-like for legit domains?
+
+```{r}
+ggplot (tester [type == "legit"], aes (legit.prob)) + 
+    geom_density () + 
+    scale_x_continuous (labels=percent)
+```
+
+Classify the (mis)prediction as a true positive, false positive, etc.
+
+```{r, results='hide'}
+tester [type == "malicious" & type.hat == "malicious", outcome := "True Positive"]
+tester [type == "legit" & type.hat == "malicious", outcome := "False Positive"]
+tester [type == "legit" & type.hat == "legit", outcome := "True Negative"]
+tester [type == "malicious" & type.hat == "legit", outcome := "False Negative"]
+```
+
+What do the confidence levels look-like for each?
+
+```{r}
+ggplot (tester, aes (malicious.prob)) + 
+    geom_histogram () +
+    scale_x_continuous (labels=percent) +
+    facet_wrap (~ outcome, scales = "free", ncol = 1)
 ```
 
 
