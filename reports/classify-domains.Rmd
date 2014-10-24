@@ -143,6 +143,34 @@ ggplot (tester, aes (malicious.prob)) +
     facet_wrap (~ outcome, scales = "free", ncol = 1)
 ```
 
+Take a look at the Receiver Operating Characteristics.  Can adjusting the class probability cut-offs improve the results?
+
+```{r}
+curve <- roc (response = tester$type, predictor = tester$malicious.prob)
+```
+
+```{r}
+plot (curve)
+```
+
+What would be the best cut-off based on the ROC?
+
+```{r}
+cutoff <- coords (curve, x = "best", best.method = "closest.topleft")
+cutoff
+```
+
+What would the predictions now be based on the alternate cut-offs?
+
+```{r}
+tester [malicious.prob > cutoff["threshold"], type.hat.new := "malicious"]
+tester [is.na (type.hat.new), type.hat.new := "legit"]
+tester [, type.hat.new := factor (type.hat.new, levels = levels (type.hat))]
+
+with (tester, confusionMatrix (type, type.hat.new, positive = "malicious"))
+```
+
+TODO: Ultimately, we cannot choose the cut-off based on held-out test data.  This has to be done on the training data alone.
 
 
 
