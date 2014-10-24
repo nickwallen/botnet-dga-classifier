@@ -107,7 +107,7 @@ tester$type.prob <- confidence [["malicious"]]
 
 Step 6: Use the model's probability and the alternative cutoff to perform final classification.
 
-```{r}
+```{r, results='hide'}
 tester [type.prob > cutoff[["threshold"]], type.hat := "malicious"]
 tester [is.na (type.hat), type.hat := "legit"]
 tester [, type.hat := as.factor (type.hat)]
@@ -126,27 +126,17 @@ Let's explore the trade-off between sensitivity and specificity.  First, capture
 ```{r}
 
 # extract the model probabilities aka confidence
-confidence <- predict (model, newdata = tester, type = "prob")
-names (confidence) <- c("legit.prob", "malicious.prob")
-
-# attach them to the original data set
-tester <- cbind (tester, confidence)
+confidence <- predict (model, newdata = tester, type = "prob") [["malicious"]]
+tester$type.prob <- confidence
 ```
 
-What do the confidence levels look-like for malicious domains?
+What do the confidence levels look-like for each type of domain?
 
 ```{r}
-ggplot (tester [type == "malicious"], aes (malicious.prob)) + 
+ggplot (tester, aes (type.prob)) + 
     geom_density () + 
-    scale_x_continuous (labels=percent)
-```
-
-What do the confidence levels look-like for legit domains?
-
-```{r}
-ggplot (tester [type == "legit"], aes (legit.prob)) + 
-    geom_density () + 
-    scale_x_continuous (labels=percent)
+    scale_x_continuous (labels=percent) +
+    facet_wrap (~ type, ncol = 1)
 ```
 
 Classify the (mis)prediction as a true positive, false positive, etc.
@@ -161,40 +151,11 @@ tester [type == "malicious" & type.hat == "legit", outcome := "False Negative"]
 What do the confidence levels look-like for each?
 
 ```{r}
-ggplot (tester, aes (malicious.prob)) + 
+ggplot (tester, aes (type.prob)) + 
     geom_histogram () +
     scale_x_continuous (labels=percent) +
     facet_wrap (~ outcome, scales = "free", ncol = 1)
 ```
-
-Take a look at the Receiver Operating Characteristics.  Can adjusting the class probability cut-offs improve the results?
-
-```{r}
-curve <- roc (response = tester$type, predictor = tester$malicious.prob)
-```
-
-```{r}
-plot (curve)
-```
-
-What would be the best cut-off based on the ROC?
-
-```{r}
-cutoff <- coords (curve, x = "best", best.method = "closest.topleft")
-cutoff
-```
-
-What would the predictions now be based on the alternate cut-offs?
-
-```{r}
-tester [malicious.prob > cutoff["threshold"], type.hat.new := "malicious"]
-tester [is.na (type.hat.new), type.hat.new := "legit"]
-tester [, type.hat.new := factor (type.hat.new, levels = levels (type.hat))]
-
-with (tester, confusionMatrix (type, type.hat.new, positive = "malicious"))
-```
-
-TODO: Ultimately, we cannot choose the cut-off based on held-out test data.  This has to be done on the training data alone.
 
 
 
