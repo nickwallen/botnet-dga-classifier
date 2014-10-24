@@ -46,11 +46,14 @@ This project contains a rudimentary classifier that can determine if a domain is
 
 #### Aspell
 
-http://www.omegahat.org/Aspell/aspell.html
+Aspell provides an R interface to an English language dictionary.  Follow these steps to install the library.
+
+1. Install the native Aspell library for your host environment.  For Mac, use [Homebrew](http://brew.sh) by executng `brew install aspell` in a terminal.  For Windows, maybe this will work?  http://aspell.net/win32/
+
+2. Then install the R package which provides an interface in R for the native libraries using the following command within an R session.
 
 ```
-brew install aspell
-install.packages("Aspell", repos = "http://www.omegahat.org/R")
+install.packages("Aspell", repos = "http://www.omegahat.org/R", type = "source")
 ```
 
 
