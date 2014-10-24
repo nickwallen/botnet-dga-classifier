@@ -67,7 +67,7 @@ trainer <- domains [ source %in% c ("goz",
                                     "opendns-top-10k")]
 ```
 
-Step 2: Train a model using **all** of the training data available from Goz and Cryptolocker.
+Step 2: Train a model using all of the training data available from Goz and Cryptolocker.
 
 ```{r, message=FALSE, results='hide', warning=FALSE}
 model <- train_classifier (type ~ length + dictionary, trainer, p = 1.0, n = 10)
@@ -77,16 +77,40 @@ model <- train_classifier (type ~ length + dictionary, trainer, p = 1.0, n = 10)
 model
 ```
 
-Step 3: Create a hold-out test data set as if Newgoz has never been encountered and is new in the wild.  Also, use a completely different set of 'legit' domains from Alexis.
+Step 3: Use the training results to select an alternate probability cutoff for class membership.
+
+```{r}
+# extract the model probabilities aka confidence
+confidence <- predict (model, newdata = trainer, type = "prob") [["malicious"]]
+
+# select an alternative cutoff based on the ROC
+curve <- roc (response = trainer$type, predictor = confidence)
+cutoff <- coords (curve, x = "best", best.method = "youden")
+```
+
+```{r}
+cutoff
+```
+
+Step 4: Create a hold-out test data set as if Newgoz has never been encountered and is new in the wild.  Also, use a completely different set of 'legit' domains from Alexis.
 
 ```{r}
 tester <- domains [ source %in% c ("newgoz", "alexa")]
 ```
 
-Step 4: Use the classification model to classify the held-out test data.
+Step 5: Use the model to determine the probability of being malicious.
 
 ```{r}
-tester$type.hat <- predict (model, newdata = tester)
+confidence <- predict (model, newdata = tester, type = "prob")
+tester$type.prob <- confidence [["malicious"]]
+```
+
+Step 6: Use the model's probability and the alternative cutoff to perform final classification.
+
+```{r}
+tester [type.prob > cutoff[["threshold"]], type.hat := "malicious"]
+tester [is.na (type.hat), type.hat := "legit"]
+tester [, type.hat := as.factor (type.hat)]
 ```
 
 ### Diagnostics
