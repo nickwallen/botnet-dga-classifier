@@ -48,7 +48,13 @@ This project contains a rudimentary classifier that can determine if a domain is
 
 Aspell provides an R interface to an English language dictionary.  Follow these steps to install Aspell.
 
-1. Install the native Aspell library for your host environment.  For Mac, use [Homebrew](http://brew.sh) by executng `brew install aspell` in a terminal.  For Windows, download and execute the full [installer](http://aspell.net/win32/).
+1. Install the native Aspell library for your host environment.  
+
+  * For Mac, use [Homebrew](http://brew.sh) by executng `brew install aspell` in a terminal.  
+
+  * For Windows, download and execute the full [installer](http://aspell.net/win32/).
+
+  * For a Linux distribution like Ubuntu with 'apt-get' execute `sudo apt-get install aspell aspell-en libaspell-dev'.
 
 2. Ensure that you have the R developer tools installed.  The next step will require building a package from source which cannot be done without these.  (TODO: Find good, informative links on how to do this.)
 

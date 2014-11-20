@@ -13,7 +13,7 @@ if (!data_exists ("quantcast")) {
     
     # download the data, if needed
     if (!file.exists (path)) {
-        download.file (url, path, method = "curl")
+        download.file (url, path)
     }
     
     # unzip and read the csv data

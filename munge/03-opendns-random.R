@@ -17,7 +17,7 @@ if (!data_exists ("opendns_random")) {
     
     # download the data, if needed
     if (!file.exists (path)) {
-        download.file (url, path, method = "curl")
+        download.file (url, path)
     }
     
     # uncompress and read the csv data
